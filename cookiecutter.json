@@ -1,0 +1,19 @@
+{
+  "wagtailkit_project_name": "Vue coding challenge",
+  "wagtailkit_project_description": "Base wagtail kit build for vue coding challenge",
+  "wagtailkit_project_author": "Torchbox <hello@torchbox.com>",
+  "wagtailkit_repo_name": "vuecodingchallenge",
+  "wagtailkit_repo_url": "https://github.com/helenb/vuecodingchallenge",
+  "wagtailkit_http_auth_password": "tbx",
+  "use_people_app": true,
+  "use_events_app": true,
+  "use_news_app": true,
+  "use_standardpages_app": true,
+  "use_frontend_component_carousel": true,
+  "use_frontend_component_cookie_notice": true,
+  "use_frontend_component_accordion": true,
+  "use_frontend_component_progress_bar": true,
+  "use_frontend_component_video_modal": true,
+  "use_frontend_component_tabs": true,
+  "use_react": true
+}
