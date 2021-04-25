@@ -94,6 +94,9 @@ INSTALLED_APPS = [
     "pattern_library",
     "vuecodingchallenge.project_styleguide.apps.ProjectStyleguideConfig",
     "wagtailaccessibility",
+    "wagtail.api.v2",
+    "wagtail.images.api.v2",
+    "rest_framework",
 ]
 
 

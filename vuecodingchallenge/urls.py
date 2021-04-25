@@ -9,6 +9,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.utils.urlpatterns import decorate_urlpatterns
+from .api import api_router
 
 from vuecodingchallenge.search import views as search_views
 from vuecodingchallenge.utils.cache import get_default_cache_control_decorator
@@ -24,7 +25,10 @@ private_urlpatterns = [
 
 
 # Public URLs that are meant to be cached.
-urlpatterns = [path("sitemap.xml", sitemap)]
+urlpatterns = [
+    path("sitemap.xml", sitemap),
+    path('api/v2/', api_router.urls),
+]
 
 
 if settings.DEBUG:
