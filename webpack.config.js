@@ -12,6 +12,10 @@ const options = {
     entry: {
         // multiple entries can be added here
         main: `./${projectRoot}/static_src/javascript/main.js`,
+        vue: `./${projectRoot}/static_src/javascript/vue.js`,
+    },
+    resolve: {
+        alias: { vue: 'vue/dist/vue.esm-bundler.js' },
     },
     output: {
         path: path.resolve(`./${projectRoot}/static_compiled/`),
