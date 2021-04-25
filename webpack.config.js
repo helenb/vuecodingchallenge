@@ -5,7 +5,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const postcssCustomProperties = require('postcss-custom-properties');
 const sass = require('sass');
-const { VueLoaderPlugin } = require('vue-loader');
 
 const projectRoot = 'vuecodingchallenge';
 
@@ -14,6 +13,9 @@ const options = {
         // multiple entries can be added here
         main: `./${projectRoot}/static_src/javascript/main.js`,
         vue: `./${projectRoot}/static_src/javascript/vue.js`,
+    },
+    resolve: {
+        alias: { vue: 'vue/dist/vue.esm-bundler.js' },
     },
     output: {
         path: path.resolve(`./${projectRoot}/static_compiled/`),
@@ -34,7 +36,6 @@ const options = {
         new MiniCssExtractPlugin({
             filename: 'css/[name].css',
         }),
-        new VueLoaderPlugin(),
     ],
     module: {
         rules: [

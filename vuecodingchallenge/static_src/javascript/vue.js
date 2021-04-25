@@ -1,6 +1,13 @@
-import Vue from 'vue';
-import Main from '../vue/Main.vue';
+import 'vue';
+import { createApp } from 'vue';
 
-new Vue({
-    render: (createEl) => createEl(Main),
-}).$mount('#app');
+const HelloVueApp = {
+    data() {
+        return {
+            message: 'Hello Vue!!',
+        };
+    },
+    delimiters: ['[[', ']]'],
+};
+
+createApp(HelloVueApp).mount('#app');
