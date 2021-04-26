@@ -1,4 +1,3 @@
-import 'vue';
 import { createApp } from 'vue';
 
 const HelloVueApp = {
