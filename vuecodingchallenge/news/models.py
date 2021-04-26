@@ -6,6 +6,7 @@ from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel
 from wagtail.core.fields import StreamField
 from wagtail.search import index
+from wagtail.api import APIField
 
 from vuecodingchallenge.utils.blocks import StoryBlock
 from vuecodingchallenge.utils.models import BasePage, RelatedPage
@@ -13,6 +14,8 @@ from vuecodingchallenge.utils.models import BasePage, RelatedPage
 
 class NewsType(models.Model):
     title = models.CharField(max_length=128)
+
+    APIField('title')
 
     def __str__(self):
         return self.title
@@ -28,6 +31,12 @@ class NewsPageNewsType(models.Model):
 
     def __str__(self):
         return self.news_type.title
+
+    news_type_name = property(str)
+
+    api_fields = [
+        APIField('news_type_name'),
+    ]
 
 
 class NewsPageRelatedPage(RelatedPage):
@@ -61,6 +70,13 @@ class NewsPage(BasePage):
         StreamFieldPanel("body"),
         InlinePanel("news_types", label="News types"),
         InlinePanel("related_pages", label="Related pages"),
+    ]
+
+    api_fields = [
+        APIField('publication_date'),
+        APIField('introduction'),
+        APIField('body'),
+        APIField('news_types')
     ]
 
     @property
