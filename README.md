@@ -1,5 +1,15 @@
 # Vue coding challenge Wagtail site
 
+## Intro
+
+This is a wagtail-kit build for us to try out using Vue for dynamic listings. The aim of the challenge is to create a paginated listing of news articles, filtered by news type. It could optionally also allow changes to ordering, e.g. newest first, oldest first and news title. (I know no-one ever wanted to organise their news items by title - this is just for a learning exercise).
+
+The build has vue version 3 added via npm. Webpack aliases 'vue.esm-bundler.js' to 'vue'. This includes the runtime compiler (see https://v3.vuejs.org/guide/installation.html#explanation-of-different-builds). Note that at the moment we do not have vue-loader set up so we can't use templates with a .vue extension. Feel free to change the set-up as part of your submission if it doesn't work for you - it's my best guess as to what will work for us at the moment.
+
+`static_src/vue.js` is set up as a separate entry with Webpack, so any code in there will compile to `static_compiled/vue.js` - this file is loaded on the news index template which displays the 'Hello vue' message.
+
+I have set up a news feed in the api including the news type - you can view it in the browser at http://localhost:3002/api/v2/pages/?type=news.NewsPage&fields=introduction,body,news_types(news_type_name) Note the news_type_name in brackets at the end - without it the news type will just come through as an id, not a name. It would be good to also add a news thumbnail to the api as part of the challenge - see Tom's 'headless wagtail with vue' tutorial for a reminder of how to do that: https://gist.github.com/tomdyson/abf1e973db4dcd50b388816f8c20adb0.
+
 ## Technical documentation
 
 This project contains technical documentation written in Markdown in the `/docs` folder. This covers:
