@@ -10,6 +10,8 @@ The build has vue version 3 added via npm. Webpack aliases 'vue.esm-bundler.js' 
 
 I have set up a news feed in the api including the news type - you can view it in the browser at http://localhost:3002/api/v2/pages/?type=news.NewsPage&fields=introduction,body,news_types(news_type_name) Note the news_type_name in brackets at the end - without it the news type will just come through as an id, not a name. It would be good to also add a news thumbnail to the api as part of the challenge - see Tom's 'headless wagtail with vue' tutorial for a reminder of how to do that: https://gist.github.com/tomdyson/abf1e973db4dcd50b388816f8c20adb0.
 
+Please submit your solution as a PR on this repo.
+
 ## Technical documentation
 
 This project contains technical documentation written in Markdown in the `/docs` folder. This covers:
