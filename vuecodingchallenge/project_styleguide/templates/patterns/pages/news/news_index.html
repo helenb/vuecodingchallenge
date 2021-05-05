@@ -3,7 +3,30 @@
 
 
 {% block content %}
-    <div id="app">[[ message ]]</div>
+    <div id="app">
+        <ul>
+            <li v-for="item in news">
+                <h2>[[ item.title ]]</h2>
+                <p>[[ item.introduction ]]</p>
+                <img v-if="item.image_thumbnail"
+                    :src="item.image_thumbnail.url"
+                    :width="item.image_thumbnail.width"
+                    :height="item.image_thumbnail.height"
+                >
+                {% comment %} <div v-for="block in item.body">
+                    <div v-if="block.type == 'heading'">
+                        <h3>[[ block.value ]]</h3>
+                    </div>
+                    <div v-else-if="block.type == 'image'">
+                        <p>image: [[ block.value ]]</p>
+                    </div>
+                    <div v-else-if="block.type == 'paragraph'">
+                        <p v-html="block.value"></p>
+                    </div>
+                </div> {% endcomment %}
+            </li>
+        </ul>
+    </div>
 {% endblock %}
 
 {% block extra_js %}
