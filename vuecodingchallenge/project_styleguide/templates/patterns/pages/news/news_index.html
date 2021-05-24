@@ -5,7 +5,7 @@
 {% block content %}
     <div id="app">
         <ul>
-            <li v-for="item in news">
+            <li v-for="item in news" key="item.id">
                 <h2>[[ item.title ]]</h2>
                 <p>[[ item.introduction ]]</p>
                 <img v-if="item.image_thumbnail"
@@ -13,7 +13,7 @@
                     :width="item.image_thumbnail.width"
                     :height="item.image_thumbnail.height"
                 >
-                {% comment %} <div v-for="block in item.body">
+                <div v-for="block in item.body">
                     <div v-if="block.type == 'heading'">
                         <h3>[[ block.value ]]</h3>
                     </div>
@@ -23,9 +23,48 @@
                     <div v-else-if="block.type == 'paragraph'">
                         <p v-html="block.value"></p>
                     </div>
-                </div> {% endcomment %}
+                </div>
             </li>
+            <li>test components</li>
+            <news-item
+                v-for="item in news"
+                v-bind:newsitem="item"
+                v-bind:key="item.id"
+            ></news-item>
         </ul>
+        <h2>trying v-on:</h2>
+        <button v-on:click="trySomething">[[ message ]]</button>
+
+        <h2>Trying 2-way binding:</h2>
+        <p>[[ bindMessage ]]</p>
+        <input v-model="bindMessage" />
+
+        <h2>Try dynamically updating news</h2>
+        <button v-on:click="test">update news</button>
+
+        <div v-if="Math.random() > 0.5">
+            Now you see me
+        </div>
+        <div v-else>
+            Now you don't
+        </div>
+
+        <hr />
+        <hr />
+        <h2> try filtering </h2>
+        <ul>
+            <news-item
+                v-for="item in filterResults(category)"
+                v-bind:newsitem="item"
+                v-bind:key="item.id"
+            ></news-item>
+        </ul>
+        <label for="category">Choose a category</label>
+        <select name="category" id="category" v-model="category">
+            <option v-for="category in newsTypes" v-bind:value="category">
+                [[ category ]]
+            </option>
+        </select>
     </div>
 {% endblock %}
 
