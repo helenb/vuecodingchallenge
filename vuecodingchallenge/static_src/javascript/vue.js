@@ -30,8 +30,9 @@ const HelloVueApp = {
     },
 
     // methods are re-run every time they are called
+    // don't use arrow functions - vue can't bind the right 'this' value otherwise
     methods: {
-        // don't use arrow functions - vue can't bind the right 'this' value otherwise
+        // filter the news listing by category
         filterResults() {
             if (this.category === 'All news') {
                 this.filteredNews = this.news;
@@ -49,6 +50,7 @@ const HelloVueApp = {
             });
         },
 
+        // paginates the filtered listing
         paginate() {
             const paginatedResults = [];
             for (let i = 0; i < this.numPages; i++) {
@@ -83,8 +85,8 @@ const HelloVueApp = {
 
     // computed properties are run once, and then their result is cached unless the data they reference updates
     computed: {
+        // get a list of categories present for our news list
         allNewsTypes() {
-            // get a list of news types present for our news list
             let news_types = ['All news'];
             this.news.forEach((newsItem) => {
                 newsItem.news_types.forEach((newsType) => {
@@ -94,10 +96,6 @@ const HelloVueApp = {
                 });
             });
             return news_types;
-        },
-
-        totalPages() {
-            return this.filteredNews.length;
         },
 
         numPages() {
