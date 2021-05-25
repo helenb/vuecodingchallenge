@@ -20,11 +20,12 @@ const HelloVueApp = {
     mounted() {
         axios
             .get(
-                '/api/v2/pages/?type=news.NewsPage&fields=introduction,body,news_types(news_type_name),image_thumbnail',
+                '/api/v2/pages/?type=news.NewsPage&fields=introduction,body,publication_date,news_types(news_type_name),image_thumbnail',
             )
             .then((response) => {
                 this.news = response.data.items;
                 this.filterResults();
+                this.orderResults('title');
                 this.paginate();
             });
     },
@@ -35,7 +36,7 @@ const HelloVueApp = {
         // filter the news listing by category
         filterResults() {
             if (this.category === 'All news') {
-                this.filteredNews = this.news;
+                this.filteredNews = [...this.news];
                 return;
             }
 
@@ -48,6 +49,50 @@ const HelloVueApp = {
                 });
                 return result;
             });
+        },
+
+        orderResults(sortMethod) {
+            // filteredNews reordered before paginating
+            switch (sortMethod) {
+                case 'title':
+                    this.filteredNews.sort(function (a, b) {
+                        var aTtitle = a.title.toLowerCase();
+                        var bTitle = b.title.toLowerCase();
+
+                        if (aTtitle < bTitle) {
+                            return -1;
+                        }
+                        if (aTtitle > bTitle) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'date-ascending':
+                    this.filteredNews.sort(function (a, b) {
+                        if (a.publication_date < b.publication_date) {
+                            return -1;
+                        }
+                        if (a.publication_date > b.publication_date) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'date-descending':
+                    this.filteredNews.sort(function (a, b) {
+                        if (a.publication_date > b.publication_date) {
+                            return -1;
+                        }
+                        if (a.publication_date < b.publication_date) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                default:
+                    break;
+            }
         },
 
         // paginates the filtered listing
@@ -75,7 +120,6 @@ const HelloVueApp = {
 
         getPrevPage() {
             let prevPageIndex = this.pageNum - 2;
-            console.log(prevPageIndex);
             this.currentPageNews = this.paginatedResults[prevPageIndex];
             this.hasPrev = this.prevPageIndex >= 0;
             this.hasNext = true;
@@ -108,6 +152,16 @@ const app = createApp(HelloVueApp);
 
 // creates the news item component
 app.component('news-item', {
+    methods: {
+        formatDate(date) {
+            const formattedDate = date.toLocaleString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+            });
+            return formattedDate;
+        },
+    },
     props: ['newsitem'],
     template: `<li>
         <h2>{{ newsitem.title }}</h2>
@@ -117,6 +171,7 @@ app.component('news-item', {
             :width="newsitem.image_thumbnail.width"
             :height="newsitem.image_thumbnail.height"
         >
+        <p>{{ formatDate(new Date(newsitem.publication_date)) }}</p>
         <ul v-for="category in newsitem.news_types">
             <li>
                 {{ category.news_type_name }}
@@ -130,3 +185,7 @@ app.mount('#app');
 // to dos
 // try api fetches for pagination / filters
 // respond to and update url params
+
+// change category: filter, paginate, set to first page. Order needs to stay the same.
+// change order: don't refilter, order, then paginate, set to first page
+// change page: just update page, no reflitering or re-ordering.

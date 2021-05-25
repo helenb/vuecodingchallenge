@@ -75,6 +75,7 @@ class NewsPage(BasePage):
 
     api_fields = [
         APIField('publication_date'),
+        APIField('display_date'),
         APIField('introduction'),
         APIField('body'),
         APIField('news_types'),
