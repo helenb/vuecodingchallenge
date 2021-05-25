@@ -1,9 +1,43 @@
 {% extends "patterns/base_page.html" %}
 {% load static %}
 
-
 {% block content %}
-    <div id="app">[[ message ]]</div>
+    <div id="app">
+        <h1>News listing</h1>
+        <div>
+            <label for="sort-order">Sort by</label>
+            <select name="sort-order" id="sort-order" @change="orderResults($event.target.value), paginate()">
+                <option value="title">Title</option>
+                <option value="date-descending">Most recent first</option>
+                <option value="date-ascending">Oldest first</option>
+            </select>
+        </div>
+        <div>
+            <label for="category">Choose a category</label>
+            <select name="category" id="category" v-model="category" @change="filterResults(), paginate()">
+                <option v-for="category in allNewsTypes" v-bind:value="category">
+                    [[ category ]]
+                </option>
+            </select>
+        </div>
+        <ul>
+            <news-item
+                v-for="item in currentPageNews"
+                v-bind:newsitem="item"
+                v-bind:key="item.id"
+            ></news-item>
+        </ul>
+
+        <div>
+            <template v-if="hasPrev">
+                <button @click="getPrevPage">Previous page</button>
+            </template>
+            Page [[ pageNum ]] of [[ numPages ]]
+            <template v-if="hasNext">
+                <button @click="getNextPage">Next page</button>
+            </template>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_js %}

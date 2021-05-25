@@ -7,6 +7,7 @@ from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPane
 from wagtail.core.fields import StreamField
 from wagtail.search import index
 from wagtail.api import APIField
+from wagtail.images.api.fields import ImageRenditionField
 
 from vuecodingchallenge.utils.blocks import StoryBlock
 from vuecodingchallenge.utils.models import BasePage, RelatedPage
@@ -74,9 +75,11 @@ class NewsPage(BasePage):
 
     api_fields = [
         APIField('publication_date'),
+        APIField('display_date'),
         APIField('introduction'),
         APIField('body'),
-        APIField('news_types')
+        APIField('news_types'),
+        APIField('image_thumbnail', serializer=ImageRenditionField('fill-100x100', source='listing_image')),
     ]
 
     @property
