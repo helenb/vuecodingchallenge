@@ -5,22 +5,18 @@ const HelloVueApp = {
     // NB don't use arrow functions on an options property or callback
     data() {
         return {
-            bindMessage: 'update me',
-            message: 'Try something',
             news: [],
-            category: '',
+            filteredNews: [],
+            category: 'All news',
+            perPage: 3,
+            pageNum: 1,
+            currentPageNews: [],
+            hasNext: false,
+            hasPrev: false,
         };
     },
     delimiters: ['[[', ']]'],
-    created() {
-        console.log('called when app is created');
-    },
-    beforeUpdate() {
-        console.log('called before updating');
-    },
-    updated() {
-        console.log('called when app is updated');
-    },
+
     mounted() {
         axios
             .get(
@@ -28,132 +24,68 @@ const HelloVueApp = {
             )
             .then((response) => {
                 this.news = response.data.items;
-                //console.log(this.news);
+                this.filterResults();
+                this.paginate();
             });
     },
-    unmounted() {
-        console.log('called when app is unmounted');
-    },
+
+    // methods are re-run every time they are called
     methods: {
         // don't use arrow functions - vue can't bind the right 'this' value otherwise
-        trySomething() {
-            this.message = 'You tried it!';
-        },
-        test() {
-            this.news = [
-                {
-                    id: 9,
-                    meta: {
-                        type: 'news.NewsPage',
-                        detail_url: 'http://localhost/api/v2/pages/5/',
-                        html_url: 'http://localhost/test-news/news-page-1/',
-                        slug: 'news-page-1',
-                        first_published_at: '2021-04-12T10:29:29.820188+01:00',
-                    },
-                    title: 'Test replacement news',
-                    introduction: 'News intro',
-                    body: [
-                        {
-                            type: 'heading',
-                            value: 'Test news body',
-                            id: '186f3716-564b-46af-9a35-cfa75cec8dda',
-                        },
-                    ],
-                    news_types: [
-                        {
-                            id: 1,
-                            meta: {
-                                type: 'news.NewsPageNewsType',
-                            },
-                            news_type_name: 'news type 1',
-                        },
-                        {
-                            id: 2,
-                            meta: {
-                                type: 'news.NewsPageNewsType',
-                            },
-                            news_type_name: 'stories',
-                        },
-                    ],
-                    image_thumbnail: {
-                        url: '/media/images/willow.2e16d0ba.fill-100x100.jpg',
-                        width: 100,
-                        height: 100,
-                    },
-                },
-                {
-                    id: 10,
-                    meta: {
-                        type: 'news.NewsPage',
-                        detail_url: 'http://localhost/api/v2/pages/6/',
-                        html_url: 'http://localhost/test-news/news-page-2/',
-                        slug: 'news-page-2',
-                        first_published_at: '2021-04-12T10:36:47.981481+01:00',
-                    },
-                    title: 'Another replacement news',
-                    introduction: 'News intro',
-                    body: [
-                        {
-                            type: 'heading',
-                            value: 'Test news body',
-                            id: '186f3716-564b-46af-9a35-cfa75cec8dda',
-                        },
-                        {
-                            type: 'image',
-                            value: {
-                                image: 1,
-                                caption: '',
-                            },
-                            id: '98f46009-1adb-4f94-a96f-1495d5958966',
-                        },
-                    ],
-                    news_types: [
-                        {
-                            id: 3,
-                            meta: {
-                                type: 'news.NewsPageNewsType',
-                            },
-                            news_type_name: 'news type 2',
-                        },
-                        {
-                            id: 6,
-                            meta: {
-                                type: 'news.NewsPageNewsType',
-                            },
-                            news_type_name: 'news type 1',
-                        },
-                    ],
-                    image_thumbnail: {
-                        url: '/media/images/sky16x9.2e16d0ba.fill-100x100.jpg',
-                        width: 100,
-                        height: 100,
-                    },
-                },
-            ];
-        },
-        filterResults(category) {
-            if (category === '') return this.news;
-            return this.news.filter((newsItem) => {
-                console.log(newsItem.news_types);
-                //return newsItem.news_types.includes('news type 1');
+        filterResults() {
+            if (this.category === 'All news') {
+                this.filteredNews = this.news;
+                return;
+            }
+
+            this.filteredNews = this.news.filter((newsItem) => {
                 let result = false;
                 newsItem.news_types.forEach((newsType) => {
-                    console.log(Object.values(newsType).includes(category));
-                    if (Object.values(newsType).includes(category)) {
+                    if (Object.values(newsType).includes(this.category)) {
                         result = true;
                     }
                 });
                 return result;
             });
         },
-        setCategory(category) {
-            this.category = category;
-            console.log(this.category);
+
+        paginate() {
+            const paginatedResults = [];
+            for (let i = 0; i < this.numPages; i++) {
+                let start = i * this.perPage;
+                let end = i * this.perPage + this.perPage;
+                paginatedResults.push(this.filteredNews.slice(start, end));
+            }
+            this.paginatedResults = paginatedResults;
+            this.currentPageNews = this.paginatedResults[0];
+            this.hasNext = this.paginatedResults.length > 1;
+            this.hasPrev = false;
+            this.pageNum = 1;
+        },
+
+        getNextPage() {
+            let nextPageIndex = this.pageNum;
+            this.currentPageNews = this.paginatedResults[nextPageIndex];
+            this.hasPrev = true;
+            this.pageNum++;
+            this.hasNext = this.paginatedResults.length > this.pageNum;
+        },
+
+        getPrevPage() {
+            let prevPageIndex = this.pageNum - 2;
+            console.log(prevPageIndex);
+            this.currentPageNews = this.paginatedResults[prevPageIndex];
+            this.hasPrev = this.prevPageIndex >= 0;
+            this.hasNext = true;
+            this.pageNum--;
         },
     },
+
+    // computed properties are run once, and then their result is cached unless the data they reference updates
     computed: {
-        newsTypes() {
-            let news_types = [''];
+        allNewsTypes() {
+            // get a list of news types present for our news list
+            let news_types = ['All news'];
             this.news.forEach((newsItem) => {
                 newsItem.news_types.forEach((newsType) => {
                     if (!news_types.includes(newsType.news_type_name)) {
@@ -163,14 +95,20 @@ const HelloVueApp = {
             });
             return news_types;
         },
+
+        totalPages() {
+            return this.filteredNews.length;
+        },
+
+        numPages() {
+            return Math.ceil(this.filteredNews.length / this.perPage);
+        },
     },
 };
 
-// method that takes arguments as to the page number and filters and fetches the correct data. would need to update news.
-// need to paginate the api listing and also allow it to take filters
-
 const app = createApp(HelloVueApp);
 
+// creates the news item component
 app.component('news-item', {
     props: ['newsitem'],
     template: `<li>
@@ -181,7 +119,16 @@ app.component('news-item', {
             :width="newsitem.image_thumbnail.width"
             :height="newsitem.image_thumbnail.height"
         >
+        <ul v-for="category in newsitem.news_types">
+            <li>
+                {{ category.news_type_name }}
+            </li>
+        </ul>
     </li>`,
 });
 
 app.mount('#app');
+
+// to dos
+// try api fetches for pagination / filters
+// respond to and update url params

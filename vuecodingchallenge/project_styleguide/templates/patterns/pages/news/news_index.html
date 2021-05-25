@@ -1,70 +1,32 @@
 {% extends "patterns/base_page.html" %}
 {% load static %}
 
-
 {% block content %}
     <div id="app">
-        <ul>
-            <li v-for="item in news" key="item.id">
-                <h2>[[ item.title ]]</h2>
-                <p>[[ item.introduction ]]</p>
-                <img v-if="item.image_thumbnail"
-                    :src="item.image_thumbnail.url"
-                    :width="item.image_thumbnail.width"
-                    :height="item.image_thumbnail.height"
-                >
-                <div v-for="block in item.body">
-                    <div v-if="block.type == 'heading'">
-                        <h3>[[ block.value ]]</h3>
-                    </div>
-                    <div v-else-if="block.type == 'image'">
-                        <p>image: [[ block.value ]]</p>
-                    </div>
-                    <div v-else-if="block.type == 'paragraph'">
-                        <p v-html="block.value"></p>
-                    </div>
-                </div>
-            </li>
-            <li>test components</li>
-            <news-item
-                v-for="item in news"
-                v-bind:newsitem="item"
-                v-bind:key="item.id"
-            ></news-item>
-        </ul>
-        <h2>trying v-on:</h2>
-        <button v-on:click="trySomething">[[ message ]]</button>
-
-        <h2>Trying 2-way binding:</h2>
-        <p>[[ bindMessage ]]</p>
-        <input v-model="bindMessage" />
-
-        <h2>Try dynamically updating news</h2>
-        <button v-on:click="test">update news</button>
-
-        <div v-if="Math.random() > 0.5">
-            Now you see me
-        </div>
-        <div v-else>
-            Now you don't
-        </div>
-
-        <hr />
-        <hr />
-        <h2> try filtering </h2>
-        <ul>
-            <news-item
-                v-for="item in filterResults(category)"
-                v-bind:newsitem="item"
-                v-bind:key="item.id"
-            ></news-item>
-        </ul>
+        <h1>News listing</h1>
         <label for="category">Choose a category</label>
-        <select name="category" id="category" v-model="category">
-            <option v-for="category in newsTypes" v-bind:value="category">
+        <select name="category" id="category" v-model="category" @change="filterResults(), paginate()">
+            <option v-for="category in allNewsTypes" v-bind:value="category">
                 [[ category ]]
             </option>
         </select>
+        <ul>
+            <news-item
+                v-for="item in currentPageNews"
+                v-bind:newsitem="item"
+                v-bind:key="item.id"
+            ></news-item>
+        </ul>
+
+        <div>
+            <template v-if="hasPrev">
+                <button @click="getPrevPage">Previous page</button>
+            </template>
+            Page [[ pageNum ]] of [[ numPages ]]
+            <template v-if="hasNext">
+                <button @click="getNextPage">Next page</button>
+            </template>
+        </div>
     </div>
 {% endblock %}
 
